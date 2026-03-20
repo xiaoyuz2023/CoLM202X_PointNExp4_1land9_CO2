@@ -1,0 +1,64 @@
+#!/bin/bash
+#BSUB -J PointSA                  # 作业名称
+#BSUB -q normal                  # 队列
+#BSUB -m node082 #指定节点
+#BSUB -n 1                      # 总核数
+##BSUB -R span[ptile=48]          # 每节点核心数
+#BSUB -M 64000                  # 内存 (MB) = 64G
+#BSUB -o lsf/launcher_%J.log
+
+# ════════════════════════════════════════
+#  本次调参设置（只需改这里）
+# ════════════════════════════════════════
+K_REF_CO2="1.0e-3"
+mkdir -p ./namelists/260316CO2/BASE/logs
+
+# ════════════════════════════════════════
+#  情景定义（OFF → ER → ALL）
+# ════════════════════════════════════════
+# SCENARIOS=("OFF" "ER" "ALL")
+SCENARIOS=("OFF" "ER" "NITR" "VC" "ALL")
+
+declare -A SC_ER
+declare -A SC_NITR
+declare -A SC_VC
+
+SC_ER["OFF"]=".false.";  SC_NITR["OFF"]=".false.";  SC_VC["OFF"]=".false."
+SC_ER["ER"]=".true.";    SC_NITR["ER"]=".false.";   SC_VC["ER"]=".false."
+SC_ER["NITR"]=".false."; SC_NITR["NITR"]=".true.";  SC_VC["NITR"]=".false."
+SC_ER["VC"]=".false.";   SC_NITR["VC"]=".false.";   SC_VC["VC"]=".true."
+SC_ER["ALL"]=".true.";   SC_NITR["ALL"]=".true.";   SC_VC["ALL"]=".true."
+
+# ════════════════════════════════════════
+#  N 梯度（字面量）
+# ════════════════════════════════════════
+FERT_VALS=(0 0.25 0.5 1 2)
+N_LABELS=("N0" "N1" "N2" "N3" "N4")
+
+# ════════════════════════════════════════
+#  提交（情景外循环，N梯度内循环）
+# ════════════════════════════════════════
+
+TOTAL=0
+for sc in "${SCENARIOS[@]}"; do
+    for i in "${!FERT_VALS[@]}"; do
+        FERT=${FERT_VALS[$i]}
+        NLABEL=${N_LABELS[$i]}
+        CASE_NAME="US-Ne1_4_1land9_spin200_${sc}_${NLABEL}"
+
+        JOB_ID=$(bsub \
+            -J "${CASE_NAME}" \
+            -o "./namelists/260316CO2/BASE/logs/${CASE_NAME}_%J.out" \
+            -e "./namelists/260316CO2/BASE/logs/${CASE_NAME}_%J.err" \
+            -env "CASE_NAME=${CASE_NAME},FERT=${FERT},USE_SOILACID=.true.,SOILACID_ER=${SC_ER[$sc]},SOILACID_NITR=${SC_NITR[$sc]},SOILACID_VC=${SC_VC[$sc]},SOILACID_K_REF_CO2=${K_REF_CO2}" \
+            < ./job_SA_single.lsf \
+            | awk -F'[<>]' '{print $2}')
+
+        echo "已提交 [${JOB_ID}]  ${CASE_NAME}  FERT=${FERT}  ER=${SC_ER[$sc]}  NITR=${SC_NITR[$sc]}  VC=${SC_VC[$sc]}"
+        TOTAL=$((TOTAL + 1))
+    done
+done
+
+echo "========================================"
+echo "共提交 ${TOTAL} 个作业  K_REF_CO2=${K_REF_CO2}"
+echo "========================================"

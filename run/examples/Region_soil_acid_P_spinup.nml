@@ -1,0 +1,86 @@
+&nl_colm
+
+! Author: Shiyu Zhang
+! Description : include soil state init from data.
+
+   DEF_CASE_NAME = 'Region_soil_acid_spinup_1'
+
+   DEF_domain%edges = 0.0
+   DEF_domain%edgen = 55.0
+   DEF_domain%edgew = 70.0
+   DEF_domain%edgee = 140.0
+
+   DEF_simulation_time%greenwich    = .TRUE.
+   DEF_simulation_time%start_year   = 1980
+   DEF_simulation_time%start_month  = 1
+   DEF_simulation_time%start_day    = 1
+   DEF_simulation_time%start_sec    = 0
+   DEF_simulation_time%end_year     = 2000
+   DEF_simulation_time%end_month    = 12
+   DEF_simulation_time%end_day      = 31
+   DEF_simulation_time%end_sec      = 86400
+   DEF_simulation_time%spinup_year  = 0
+   DEF_simulation_time%spinup_month = 1
+   DEF_simulation_time%spinup_day   = 1
+   DEF_simulation_time%spinup_sec   = 0
+   DEF_simulation_time%spinup_repeat = 0
+
+   DEF_simulation_time%timestep     = 1800.
+
+   DEF_dir_rawdata = '/stu02/zhangsy24/model/data/CoLMrawdata/'
+   DEF_dir_runtime = '/stu02/zhangsy24/model/data/CoLMruntime/'
+   DEF_dir_output  = '/stu02/zhangsy24/model/CoLMcases/TEST20250908'
+
+   ! ----- land units and land sets -----
+   ! for GRIDBASED
+   DEF_GRIDBASED_lon_res = 0.5
+   DEF_GRIDBASED_lat_res = 0.5
+
+   ! LAI setting
+   DEF_LAI_MONTHLY = .false.
+   DEF_LAI_CHANGE_YEARLY = .false.
+   DEF_USE_LAIFEEDBACK = .false.
+
+   ! soil state init
+   DEF_USE_SoilInit  = .true.
+   DEF_file_SoilInit = '/stu02/zhangsy24/model/data/CoLMruntime/soilstate.nc' 
+   
+   ! soil CN init
+   DEF_USE_CN_INIT   = .true.
+   DEF_file_cn_init = '/stu02/zhangsy24/model/data/CoLMruntime/cnsteadystate.nc'
+
+   ! SASU
+   DEF_USE_SASU = .false.
+   DEF_USE_PN = .false.
+
+   !
+   DEF_USE_PLANTHYDRAULICS = .false.
+   DEF_USE_VariablySaturatedFlow = .false.
+   DEF_USE_LAIFEEDBACK = .false.
+
+   ! Canopy DEF Interception scheme selection
+   DEF_Interception_scheme=1 !1:CoLM2014；2:CLM4.5; 3:CLM5; 4:Noah-MP; 5:MATSIRO; 6:VIC
+
+   ! ----- forcing -----
+   ! Options :
+   ! PRINCETON | GSWP3   | QIAN  | CRUNCEPV4 | CRUNCEPV7 | ERA5LAND | ERA5  |  MSWX
+   ! WFDE5     | CRUJRA  | WFDEI | JRA55     | GDAS      | CMFD     | POINT |  JRA3Q
+   DEF_forcing_namelist = '/stu02/zhangsy24/CoLM202X_RegionNExp4_1landspin/run/forcing/ERA5.nml'
+
+   DEF_Forcing_Interp_Method = 'arealweight' ! 'arealweight' (default) or 'bilinear'
+
+   ! ----- history -----
+   DEF_HIST_lon_res = 0.5
+   DEF_HIST_lat_res = 0.5
+   DEF_WRST_FREQ = 'YEARLY' ! write restart file frequency: HOURLY/DAILY/MONTHLY/YEARLY
+   DEF_HIST_FREQ = 'MONTHLY' ! write history file frequency: HOURLY/DAILY/MONTHLY/YEARLY
+   DEF_HIST_groupby = 'YEAR' ! history in one file: DAY/MONTH/YEAR
+   DEF_HIST_mode = 'one' ! history in one or block
+   DEF_REST_CompressLevel = 1
+   DEF_HIST_CompressLevel = 1
+
+   DEF_HIST_WriteBack = .false.
+
+   DEF_hist_vars_out_default = .true.
+
+/

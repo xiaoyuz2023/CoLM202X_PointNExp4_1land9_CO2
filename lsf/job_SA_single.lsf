@@ -1,0 +1,43 @@
+#!/bin/bash
+#BSUB -J PointSA                  # 作业名称
+#BSUB -q normal                  # 队列
+#BSUB -m node082 #指定节点
+#BSUB -n 1                      # 总核数
+##BSUB -R span[ptile=48]          # 每节点核心数
+#BSUB -M 64000                  # 内存 (MB) = 64G
+#BSUB -o ./namelists/260316CO2/K_REF_CO2/logs/%J.out
+#BSUB -e ./namelists/260316CO2/K_REF_CO2/logs/%J.err
+
+ulimit -s unlimited
+source /share/home/dq089/soft/gnu-env 
+
+echo "作业开始: $(date '+%Y-%m-%d %H:%M:%S')"
+echo "作业ID: $LSB_JOBID  节点: $LSB_HOSTS"
+
+# ── 参数（launcher 通过环境变量传入；未传则用此处默认值）──
+: "${CASE_NAME:=Ne1_4_1land9_spin200_OFF_N0}"
+: "${FERT:=0}"
+: "${USE_SOILACID:=.true.}"
+: "${SOILACID_ER:=.false.}"
+: "${SOILACID_NITR:=.false.}"
+: "${SOILACID_VC:=.false.}"
+: "${SOILACID_K_REF_CO2:=1.0e-3}"
+
+echo "========================================"
+echo "  实验名: ${CASE_NAME}"
+echo "  FERT  : ${FERT}"
+echo "  情景  : ER=${SOILACID_ER}  NITR=${SOILACID_NITR}  VC=${SOILACID_VC}"
+echo "  调参  : K_REF_CO2=${SOILACID_K_REF_CO2}"
+echo "========================================"
+
+set -e
+
+source ./update_namelist.sh
+
+python3 model_SA_0106.py
+
+./run/mksrfdata.x "${NAMELIST_FILE}"
+
+./run/colm.x "${NAMELIST_FILE}" > /dev/null
+
+echo "作业完成: $(date '+%Y-%m-%d %H:%M:%S')"

@@ -1,0 +1,85 @@
+&nl_colm
+
+! Author: shiyu Zhang 
+
+   DEF_CASE_NAME = 'US-Whs_4_1land8_nospin_T1'
+   
+   SITE_fsitedata = 'null'
+   SITE_lon_location = -110.0522
+   SITE_lat_location = 31.7438
+   
+   USE_SITE_landtype         = .true.
+   USE_SITE_pctpfts          = .true.
+   USE_SITE_pctcrop          = .true.
+   USE_SITE_htop             = .true.
+   USE_SITE_LAI              = .true.
+   USE_SITE_lakedepth        = .false.
+   USE_SITE_soilreflectance  = .false.
+   USE_SITE_soilparameters   = .false.
+   USE_SITE_dbedrock         = .false.
+   USE_SITE_topography       = .false.
+
+
+   DEF_simulation_time%greenwich    = .TRUE.
+   DEF_simulation_time%start_year   = 2008
+   DEF_simulation_time%start_month  = 1
+   DEF_simulation_time%start_day    = 1
+   DEF_simulation_time%start_sec    = 0
+   DEF_simulation_time%end_year     = 2014
+   DEF_simulation_time%end_month    = 12
+   DEF_simulation_time%end_day      = 31
+   DEF_simulation_time%end_sec      = 86400
+   DEF_simulation_time%spinup_year  = 0
+   DEF_simulation_time%spinup_month = 1
+   DEF_simulation_time%spinup_day   = 1
+   DEF_simulation_time%spinup_sec   = 0
+   DEF_simulation_time%spinup_repeat = 50
+
+   DEF_simulation_time%timestep     = 1800.
+
+   DEF_dir_rawdata = '/stu02/zhangsy24/model/data/CoLMrawdata/'
+   DEF_dir_runtime = '/stu02/zhangsy24/model/data/CoLMruntime/'
+   DEF_dir_output  = '/stu02/zhangsy24/model/CoLMcases/TEST20251113SA/'
+
+   ! LAI setting
+   DEF_LAI_MONTHLY = .true.
+   DEF_LAI_CHANGE_YEARLY = .false.
+
+   ! soil state init
+   DEF_USE_SoilInit  = .true.
+   DEF_file_SoilInit = '/stu02/zhangsy24/model/data/CoLMruntime/soilstate.nc' 
+   
+   ! soil CN init
+   DEF_USE_CN_INIT   = .true.
+   DEF_file_cn_init = '/stu02/zhangsy24/model/data/CoLMruntime/cnsteadystate.nc'
+
+   ! SASU
+   DEF_USE_SASU = .false.
+   DEF_USE_PN = .false.
+
+   DEF_USE_PLANTHYDRAULICS = .false.
+   DEF_USE_VariablySaturatedFlow = .false.
+   DEF_USE_LAIFEEDBACK = .true.
+
+   ! Canopy DEF Interception scheme selection
+   DEF_Interception_scheme=1 !1:CoLM2014；2:CLM4.5; 3:CLM5; 4:Noah-MP; 5:MATSIRO; 6:VIC
+
+   DEF_USE_SOILACIDIFICATION = .true.
+
+   ! ----- forcing -----
+   ! Options :
+   ! PRINCETON | GSWP3   | QIAN  | CRUNCEPV4 | CRUNCEPV7 | ERA5LAND | ERA5  |  MSWX
+   ! WFDE5     | CRUJRA  | WFDEI | JRA55     | GDAS      | CMFD     | POINT |  JRA3Q
+   DEF_forcing_namelist = '/stu02/zhangsy24/CoLM202X_PointNExp4_1landspin/run/forcing/POINT_USWhs.nml'
+
+   ! ----- history -----
+   DEF_WRST_FREQ = 'YEARLY' ! write restart file frequency: HOURLY/DAILY/MONTHLY/YEARLY
+   DEF_HIST_FREQ = 'MONTHLY' ! write history file frequency: HOURLY/DAILY/MONTHLY/YEARLY
+   DEF_HIST_groupby = 'YEAR' ! history in one file: DAY/MONTH/YEAR
+   DEF_HIST_mode = 'one' ! history in one or block
+   DEF_REST_CompressLevel = 1
+   DEF_HIST_CompressLevel = 1
+
+   DEF_hist_vars_out_default = .true.
+
+/
